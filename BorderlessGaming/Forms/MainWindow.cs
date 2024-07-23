@@ -5,10 +5,10 @@ using System.Drawing;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BlueMystic;
 using BorderlessGaming.Logic.Core;
 using BorderlessGaming.Logic.Extensions;
 using BorderlessGaming.Logic.Models;
-using BorderlessGaming.Logic.Steam;
 using BorderlessGaming.Logic.System;
 using BorderlessGaming.Logic.Windows;
 using BorderlessGaming.Properties;
@@ -22,6 +22,7 @@ namespace BorderlessGaming.Forms
         {
             _watcher = new ProcessWatcher(this);
             InitializeComponent();
+            _ = new DarkModeCS(this);
             LanguageManager.Setup(toolStripLanguages);
         }
 
@@ -921,24 +922,6 @@ fav.PositionX.ToString()), out int favPositionX);
             else
             {
                 WindowState = FormWindowState.Normal;
-            }
-
-            if (SteamApi.IsLoaded && _toolStripDisableSteamIntegration == null)
-            {
-                _toolStripDisableSteamIntegration =
-                    new ToolStripMenuItem
-                    {
-                        Name = "toolStripDisableSteamIntegration",
-                        Size = new Size(254, 22),
-                        Text = LanguageManager.Data("toolStripDisableSteamIntegration"),
-                        ToolTipText = LanguageManager.Data("steamHint"),
-                        Checked = settings.DisableSteamIntegration,
-                        CheckOnClick = true
-                    };
-                // let's do this before registering the CheckedChanged event
-                _toolStripDisableSteamIntegration.CheckedChanged +=
-                    ToolStripDisableSteamIntegrationCheckChanged;
-                toolsToolStripMenuItem.DropDownItems.Insert(0, _toolStripDisableSteamIntegration);
             }
         }
 
