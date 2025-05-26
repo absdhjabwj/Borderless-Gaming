@@ -1,34 +1,31 @@
-name: Build .NET Desktop App
+name: Build with VS 2017
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
 
-    env:
-      Solution_Name: BorderlessGaming.sln
-      Configuration: Release
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v1
+
+    - name: Restore NuGet packages
+      run: nuget restore BorderlessGaming.sln
 
     - name: Build solution
-      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration
+      shell: powershell
+      run: |
+        msbuild BorderlessGaming.sln /p:Configuration=Release /p:Platform="Any CPU"
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
+    - name: Upload build output
+      uses: actions/upload-artifact@v3
       with:
         name: BuildOutput
         path: |
-          **\bin\Release\
+          BorderlessGaming\bin\Release\
+          BorderlessGaming.Logic\bin\Release\
